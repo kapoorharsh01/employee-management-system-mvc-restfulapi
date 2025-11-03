@@ -13,7 +13,7 @@ namespace EmployeeManagementSystem
 
             builder.Services.AddHttpClient<EmployeeApiService>(client =>
             {
-                client.BaseAddress = new Uri("http://localhost:8081/api/");
+                client.BaseAddress = new Uri("http://localhost:7033/api/");
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
             });
 

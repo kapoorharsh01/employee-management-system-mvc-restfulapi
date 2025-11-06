@@ -9,43 +9,133 @@
         <thead>
             <tr>
                 <th>
+                    Name
                     <a asp-action="Index"
                        asp-route-pageNumber="1"
                        asp-route-pageSize="@Model.PageSize"
                        asp-route-sortColumn="name"
                        asp-route-sortDirection="@(ViewBag.SortDirection == "asc" ? "desc" : "asc")"
-                       class="text-dark">
-                        Name
+                       class="text-dark text-decoration-none">
+                        @if (ViewBag.SortColumn == "name")
+                        {
+                            @if (ViewBag.SortDirection == "asc")
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1" />
+                                </svg>
+
+                            }
+                        }
+                        else
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5" />
+                            </svg>
+                        }
+
                     </a>
+
                 </th>
                 <th>
+                    Department
                     <a asp-action="Index"
                        asp-route-pageNumber="1"
                        asp-route-pageSize="@Model.PageSize"
                        asp-route-sortColumn="department"
                        asp-route-sortDirection="@(ViewBag.SortDirection == "asc" ? "desc" : "asc")"
                        class="text-dark">
-                        Department
+                        @if (ViewBag.SortColumn == "department")
+                        {
+                            @if (ViewBag.SortDirection == "asc")
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1" />
+                                </svg>
+
+                            }
+                        }
+                        else
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5" />
+                            </svg>
+                        }
                     </a>
                 </th>
                 <th>
+                    Email
                     <a asp-action="Index"
                        asp-route-pageNumber="1"
                        asp-route-pageSize="@Model.PageSize"
                        asp-route-sortColumn="email"
                        asp-route-sortDirection="@(ViewBag.SortDirection == "asc" ? "desc" : "asc")"
                        class="text-dark">
-                        Email
+                        @if (ViewBag.SortColumn == "email")
+                        {
+                            @if (ViewBag.SortDirection == "asc")
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1" />
+                                </svg>
+
+                            }
+                        }
+                        else
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5" />
+                            </svg>
+                        }
                     </a>
                 </th>
                 <th>
+                    Joining Date
                     <a asp-action="Index"
                        asp-route-pageNumber="1"
                        asp-route-pageSize="@Model.PageSize"
                        asp-route-sortColumn="dateOfJoining"
                        asp-route-sortDirection="@(ViewBag.SortDirection == "asc" ? "desc" : "asc")"
                        class="text-dark">
-                        Joining Date
+                        @if (ViewBag.SortColumn == "dateOfJoining")
+                        {
+                            @if (ViewBag.SortDirection == "asc")
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5" />
+                                </svg>
+                            }
+                            else
+
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1" />
+                                </svg>
+                            }
+                        }
+                        else
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5" />
+                            </svg>
+                        }
                     </a>
                 </th>
                 <th>Actions</th>
@@ -79,40 +169,59 @@
     </table>
 </div>
 
-<div class="text-center mt-4">
-    @if (ViewBag.PageNumber > 1)
-    {
-        <a asp-route-pageNumber="@(ViewBag.PageNumber - 1)"
-           asp-route-pageSize="@ViewBag.PageSize"
-           asp-route-sortColumn="@ViewBag.SortColumn"
-           asp-route-sortDirection="@ViewBag.SortDirection"
-           class="btn btn-outline-primary me-2">
-            Prev
-        </a>
-    }
-    <span class="mx-3">
-        Page <strong>@ViewBag.PageNumber</strong> of <strong>@Model.TotalPages</strong>
-    </span>
-    @if (ViewBag.PageNumber < Model.TotalPages)
-    {
-        <a asp-route-pageNumber="@(ViewBag.PageNumber + 1)"
-           asp-route-pageSize="@ViewBag.PageSize"
-           asp-route-sortColumn="@ViewBag.SortColumn"
-           asp-route-sortDirection="@ViewBag.SortDirection"
-           class="btn btn-outline-primary ms-2">
-            Next
-        </a>
-    }
-    @* @if (ViewBag.PageNumber == Model.TotalPages)
-    {
-        <a asp-route-pageNumber="1"
-           asp-route-pageSize="@ViewBag.PageSize"
-           asp-route-sortColumn="@ViewBag.SortColumn"
-           asp-route-sortDirection="@ViewBag.SortDirection"
-           class="btn btn-outline-primary ms-2">
-            Home
-        </a>
-    } *@
+<div class="mt-4">
+    <div class="text-muted mb-2">
+        Page @ViewBag.PageNumber of @Model.TotalPages
+    </div>
+    <nav aria-label="Page navigation">
+
+        <ul class="pagination mb-0">
+            @{
+                int currentPage = ViewBag.PageNumber;
+                int startPage = Math.Max(1, currentPage - 2);
+                int endPage = Math.Min(Model.TotalPages, currentPage + 2);
+            }
+
+            @* @if (currentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-route-pageNumber="@(currentPage - 1)"
+                       asp-route-pageSize="@ViewBag.PageSize"
+                       asp-route-sortColumn="@ViewBag.SortColumn"
+                       asp-route-sortDirection="@ViewBag.SortDirection">
+                        «
+                    </a>
+                </li>
+            } *@
+
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link"
+                       asp-route-pageNumber="@i"
+                       asp-route-pageSize="@ViewBag.PageSize"
+                       asp-route-sortColumn="@ViewBag.SortColumn"
+                       asp-route-sortDirection="@ViewBag.SortDirection">
+                        @i
+                    </a>
+                </li>
+            }
+
+            @if (currentPage < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-route-pageNumber="@(currentPage + 1)"
+                       asp-route-pageSize="@ViewBag.PageSize"
+                       asp-route-sortColumn="@ViewBag.SortColumn"
+                       asp-route-sortDirection="@ViewBag.SortDirection">
+                        »
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
 </div>
 
 @section Scripts {

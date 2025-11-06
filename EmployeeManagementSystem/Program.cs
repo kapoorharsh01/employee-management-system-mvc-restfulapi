@@ -11,9 +11,10 @@ namespace EmployeeManagementSystem
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            var apiBaseUrl = builder.Configuration["ApiSettings:BaseUrl"];
             builder.Services.AddHttpClient<EmployeeApiService>(client =>
             {
-                client.BaseAddress = new Uri("http://localhost:7033/api/");
+                client.BaseAddress = new Uri(apiBaseUrl);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
             });
 

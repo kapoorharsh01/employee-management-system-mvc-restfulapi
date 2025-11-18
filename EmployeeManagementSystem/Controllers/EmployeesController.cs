@@ -34,7 +34,13 @@ namespace EmployeeManagementSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Employee obj)
         {
-            await _apiService.CreateEmployeeAsync(obj);
+            var result = await _apiService.CreateEmployeeAsync(obj);
+            if (!result.Success)
+            {
+                ModelState.AddModelError("Email", result.Message);
+                return View(obj);
+            }
+            TempData["Success"] = result.Message;
             return RedirectToAction(nameof(Index));
         }
 
@@ -47,8 +53,13 @@ namespace EmployeeManagementSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Employee obj)
         {
-            await _apiService.UpdateEmployeeAsync(id, obj);
-
+            var result = await _apiService.UpdateEmployeeAsync(id, obj);
+            if (!result.Success)
+            {
+                ModelState.AddModelError("Email", result.Message);
+                return View(obj);
+            }
+            TempData["Success"] = result.Message;
             return RedirectToAction(nameof(Index));
         }
 
@@ -56,6 +67,11 @@ namespace EmployeeManagementSystem.Controllers
         {
             await _apiService.DeleteEmployeeAsync(id);
             return Ok();
+        }
+
+        public IActionResult Error()
+        {
+            return View();
         }
     }
 }

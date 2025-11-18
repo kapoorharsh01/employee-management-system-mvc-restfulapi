@@ -1,4 +1,4 @@
-﻿@model ErrorViewModel
+﻿@* @model ErrorViewModel
 @{
     ViewData["Title"] = "Error";
 }
@@ -22,4 +22,16 @@
     It can result in displaying sensitive information from exceptions to end users.
     For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
     and restarting the app.
-</p>
+</p> *@
+
+@{
+    Layout = null;
+}
+
+<div class="container mt-5 text-center">
+    <h1 class="text-danger">Something went wrong</h1>
+    <p>The page you are looking for does not exist.</p>
+
+    <a asp-action="Index" asp-controller="Employees">Go back home</a>
+</div>
+

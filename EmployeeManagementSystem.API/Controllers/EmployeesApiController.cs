@@ -9,9 +9,12 @@ namespace EmployeeManagementSystem.API.Controllers
     public class EmployeesApiController : ControllerBase
     {
         private readonly IRepository<Employee> _repository;
-        public EmployeesApiController(IRepository<Employee> repository)
+        private readonly ILogger<EmployeesApiController> _logger;
+
+        public EmployeesApiController(IRepository<Employee> repository, ILogger<EmployeesApiController> logger)
         {
             _repository = repository;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -24,47 +27,107 @@ namespace EmployeeManagementSystem.API.Controllers
         //https://localhost:7033/api/employeesapi?pageNumber=2&pageSize=5&sortColumn=Name&sortDirection=desc
         //When someone visits this URL, grab these values from the ? part.
         {
-            var employees = await _repository.GetAllAsync(pageNumber, pageSize, sortColumn, sortDirection);
-            return Ok(employees);
+            try
+            {
+                var employees = await _repository.GetAllAsync(pageNumber, pageSize, sortColumn, sortDirection);
+                _logger.LogInformation("All Employees have been sent as requested!");
+
+                return Ok(employees);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occured while sending all employees.");
+                throw;
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetEmployee(int id)
         {
             var employee = await _repository.GetByIdAsync(id);
+
+            if (employee == null)
+            {
+                return NotFound(new ApiResponse { Success = false, Message = "Employeee not found" });
+            }
+
+            _logger.LogInformation("Employee fetched successfully: {Id}", id);
             return Ok(employee);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Employee>> AddEmployee(Employee obj)
+        public async Task<ActionResult> AddEmployee(Employee obj)
         {
-            if(await _repository.EmailExistsAsync(obj.EmployeeId, obj.Email))
+            try
             {
-                return BadRequest(new {message = "Email Exists"});
+                if (await _repository.EmailExistsAsync(obj.EmployeeId, obj.Email))
+                {
+                    _logger.LogWarning("Creation of employee failed because this {Email} already exists", obj.Email);
+
+                    return BadRequest(new ApiResponse { Success = false, Message = "Email already exists" });
+                }
+
+                await _repository.AddAsync(obj);
+                _logger.LogInformation("Employee created!");
+
+                return Ok(new ApiResponse
+                {
+                    Success = true,
+                    Message = "Employee created successfully!"
+                });
             }
-            await _repository.AddAsync(obj);
-            return Created();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while Adding Employee.");
+                throw;
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateEmployee(int id, [FromBody] Employee obj)
         {
-            if (id != obj.EmployeeId)
+            try
             {
-                return BadRequest();
+                if (id != obj.EmployeeId)
+                {
+                    _logger.LogWarning("Employee not found with : {Id}", id);
+
+                    return NotFound(new ApiResponse { Success = false, Message = "Employeee not found" });
+                }
+                if (await _repository.EmailExistsAsync(obj.EmployeeId, obj.Email))
+                {
+                    _logger.LogWarning("Updation of employee failed because this {Email} already exists", obj.Email);
+
+                    return BadRequest(new ApiResponse { Success = false, Message = "Email already exists" });
+                }
+                await _repository.UpdateAsync(obj);
+                _logger.LogInformation("Employee updated!");
+
+                return Ok(new ApiResponse
+                {
+                    Success = true,
+                    Message = "Employee updated successfully!"
+                });
             }
-            if (await _repository.EmailExistsAsync(obj.EmployeeId, obj.Email))
+            catch (Exception ex)
             {
-                return BadRequest(new { message = "Email Exists" });
+                _logger.LogError(ex, "Unexpected error while Updating Employee.");
+                throw;
             }
-            await _repository.UpdateAsync(obj);
-            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteEmployee(int id)
         {
-            await _repository.DeleteAsync(id);
+            var isDeleted = await _repository.DeleteAsync(id);
+            if (!isDeleted)
+            {
+                return NotFound(new ApiResponse
+                {
+                    Success = false,
+                    Message = "Employee not found"
+                });
+            }
             return NoContent();
         }
     }

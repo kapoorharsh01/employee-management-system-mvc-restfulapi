@@ -11,6 +11,11 @@ namespace EmployeeManagementSystem.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // FORCE CONSOLE LOGGING 
+            //builder.Logging.ClearProviders();
+            //builder.Logging.AddConsole();
+            //builder.Logging.AddDebug();
+
             // Add services to the container.
             builder.Services.AddControllers();
 

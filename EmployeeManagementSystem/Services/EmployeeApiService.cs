@@ -37,14 +37,15 @@ namespace EmployeeManagementSystem.Services
         }
 
         //POST : api/employeesapi/
-        public async Task CreateEmployeeAsync(Employee obj)
+        public async Task<ApiResponse> CreateEmployeeAsync(Employee obj)
         {
             var response = await _httpClient.PostAsJsonAsync("EmployeesApi", obj);
-            response.EnsureSuccessStatusCode();
+            var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
+            return apiResponse;
         }
 
         //PUT : api/employeesapi/id
-        public async Task UpdateEmployeeAsync(int id, Employee obj)
+        public async Task<ApiResponse> UpdateEmployeeAsync(int id, Employee obj)
         {
             var response = await _httpClient.PutAsJsonAsync($"EmployeesApi/{id}", obj);
             //if (!response.IsSuccessStatusCode)
@@ -54,7 +55,8 @@ namespace EmployeeManagementSystem.Services
             //    Console.WriteLine($"Error response body: {errorContent}");
             //    // Handle specific error codes or log the error
             //}
-            response.EnsureSuccessStatusCode();
+            var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
+            return apiResponse;
         }
 
         //Delete : api/employeesapi/id

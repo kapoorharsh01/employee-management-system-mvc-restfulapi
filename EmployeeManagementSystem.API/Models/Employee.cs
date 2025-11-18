@@ -19,4 +19,9 @@ namespace EmployeeManagementSystem.API.Models
         public int PageSize { get; set; }
         public int TotalPages => (int)Math.Ceiling((double)TotalItems / PageSize);
     }
+    public class ApiResponse
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+    }
 }

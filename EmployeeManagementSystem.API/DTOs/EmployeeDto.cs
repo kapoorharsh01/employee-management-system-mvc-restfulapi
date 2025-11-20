@@ -1,11 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-namespace EmployeeManagementSystem.API.Models
+﻿namespace EmployeeManagementSystem.API.DTOs
 {
-    public class Employee
+    public class EmployeeDto
     {
-        [Key]
         public int EmployeeId { get; set; }
-        [Required]
         public string Name { get; set; }
         public string? Department { get; set; }
         public string? Email { get; set; }

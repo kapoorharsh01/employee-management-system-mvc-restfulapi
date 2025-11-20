@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using EmployeeManagementSystem.API.Models;
+using EmployeeManagementSystem.API.DTOs;
 using EmployeeManagementSystem.API.Repositories;
+using EmployeeManagementSystem.API.Helpers;
+using EmployeeManagementSystem.API.Models;
+using AutoMapper;
 
 namespace EmployeeManagementSystem.API.Controllers
 {
@@ -10,15 +13,17 @@ namespace EmployeeManagementSystem.API.Controllers
     {
         private readonly IRepository<Employee> _repository;
         private readonly ILogger<EmployeesApiController> _logger;
+        private readonly IMapper _mapper;
 
-        public EmployeesApiController(IRepository<Employee> repository, ILogger<EmployeesApiController> logger)
+        public EmployeesApiController(IRepository<Employee> repository, ILogger<EmployeesApiController> logger, IMapper mapper)
         {
             _repository = repository;
             _logger = logger;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedResult<Employee>>> GetEmployees(
+        public async Task<ActionResult<PagedResult<EmployeeDto>>> GetEmployees(
             [FromQuery] int pageNumber,
             [FromQuery] int pageSize,
             [FromQuery] string sortColumn,
@@ -29,10 +34,18 @@ namespace EmployeeManagementSystem.API.Controllers
         {
             try
             {
-                var employees = await _repository.GetAllAsync(pageNumber, pageSize, sortColumn, sortDirection);
+                var result = await _repository.GetAllAsync(pageNumber, pageSize, sortColumn, sortDirection);
                 _logger.LogInformation("All Employees have been sent as requested!");
 
-                return Ok(employees);
+                var employeesDto = _mapper.Map<List<EmployeeDto>>(result.Employees);
+                //Console.WriteLine($"Response: {employeesDto}");
+                return Ok(new PagedResult<EmployeeDto>
+                {
+                    Employees = employeesDto,
+                    TotalItems = result.TotalItems,
+                    PageNumber = result.PageNumber,
+                    PageSize = result.PageSize
+                });
             }
             catch (Exception ex)
             {
@@ -42,32 +55,37 @@ namespace EmployeeManagementSystem.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(int id)
+        public async Task<ActionResult<EmployeeDto>> GetEmployee(int id)
         {
-            var employee = await _repository.GetByIdAsync(id);
+            var result = await _repository.GetByIdAsync(id);
 
-            if (employee == null)
+            if (result == null)
             {
                 return NotFound(new ApiResponse { Success = false, Message = "Employeee not found" });
             }
 
             _logger.LogInformation("Employee fetched successfully: {Id}", id);
+
+            var employee = _mapper.Map<EmployeeDto>(result);
             return Ok(employee);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddEmployee(Employee obj)
+        public async Task<ActionResult> AddEmployee(EmployeeDto dto)
         {
             try
             {
-                if (await _repository.EmailExistsAsync(obj.EmployeeId, obj.Email))
+                // POST: use excludeId = 0 (new employee, no real ID yet)
+                if (await _repository.EmailExistsAsync(0, dto.Email)) // refer at last for detailed explaination
                 {
-                    _logger.LogWarning("Creation of employee failed because this {Email} already exists", obj.Email);
+                    _logger.LogWarning("Creation of employee failed because this {Email} already exists", dto.Email);
 
                     return BadRequest(new ApiResponse { Success = false, Message = "Email already exists" });
                 }
 
-                await _repository.AddAsync(obj);
+                var employee = _mapper.Map<Employee>(dto);
+
+                await _repository.AddAsync(employee);
                 _logger.LogInformation("Employee created!");
 
                 return Ok(new ApiResponse
@@ -84,23 +102,28 @@ namespace EmployeeManagementSystem.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateEmployee(int id, [FromBody] Employee obj)
+        public async Task<ActionResult> UpdateEmployee(int id, [FromBody] EmployeeDto dto)
         {
             try
             {
-                if (id != obj.EmployeeId)
+                var existingEmployee = await _repository.GetByIdAsync(id);
+
+                if (existingEmployee == null)
                 {
                     _logger.LogWarning("Employee not found with : {Id}", id);
 
                     return NotFound(new ApiResponse { Success = false, Message = "Employeee not found" });
                 }
-                if (await _repository.EmailExistsAsync(obj.EmployeeId, obj.Email))
+                if (await _repository.EmailExistsAsync(id, dto.Email))
                 {
-                    _logger.LogWarning("Updation of employee failed because this {Email} already exists", obj.Email);
+                    _logger.LogWarning("Updation of employee failed because this {Email} already exists", dto.Email);
 
                     return BadRequest(new ApiResponse { Success = false, Message = "Email already exists" });
                 }
-                await _repository.UpdateAsync(obj);
+
+                _mapper.Map(dto, existingEmployee); // refer at last for detailed explaination
+
+                await _repository.UpdateAsync(existingEmployee);
                 _logger.LogInformation("Employee updated!");
 
                 return Ok(new ApiResponse
@@ -132,3 +155,30 @@ namespace EmployeeManagementSystem.API.Controllers
         }
     }
 }
+
+/* ---------------------------------------------------------
+   EMAIL CHECK LOGIC – QUICK SUMMARY
+   ---------------------------------------------------------
+   1. POST (Create):
+      - New employees do NOT have a real ID yet.
+      - EF Core does not assign the ID until SaveChanges().
+      - So we pass excludeId = 0 when checking email.
+      - This checks if ANY existing employee has the same email.
+
+      Example:
+      await EmailExistsAsync(0, dto.Email)
+
+   2. PUT (Update):
+      - Existing employees already have a real ID.
+      - We must exclude the current user from the email check.
+      - So we pass the same ID we are updating.
+      - This ensures: "No other employee has this email."
+
+      Example:
+      await EmailExistsAsync(id, dto.Email)
+
+   3. Mapping Notes:
+      - POST: _mapper.Map<Employee>(dto) creates a NEW entity.
+      - PUT:  _mapper.Map(dto, existingEmployee) updates in-place
+              WITHOUT creating a new DB record.
+----------------------------------------------------------- */

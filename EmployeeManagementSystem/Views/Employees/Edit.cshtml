@@ -19,7 +19,7 @@
                 <div class="card-body">
                     <form asp-action="Edit" method="post">
                         @* <div asp-validation-summary="All" class="text-danger"></div> *@
-                        <input type="hidden" asp-for="EmployeeId"/>
+                        <input type="hidden" asp-for="EmployeeId" />
                         <div class="form-group mb-3">
                             <label asp-for="Name" class="form-label">Name</label>
                             <input asp-for="Name" class="form-control" maxlength="25" />
@@ -39,7 +39,7 @@
                             <input asp-for="DateOfJoining" class="form-control" type="date" />
                         </div>
                         <div class="d-flex justify-content-between">
-                            <button type="submit" id = "editButton" class="btn btn-primary">Edit</button>
+                            <button type="submit" id="editButton" class="btn btn-primary">Edit</button>
                             <a asp-controller="Employees" asp-action="Index" class="btn btn-secondary">Cancel</a>
                         </div>
                     </form>
@@ -53,21 +53,21 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", () => {
 
             const form = document.querySelector("form");
             const button = document.getElementById("editButton");
-            let isDirty = false;
 
-            // Detect ANY change in form controls
-            form.addEventListener("input", function () {
-                if (!isDirty) {
-                    button.textContent = "Save";
-                    isDirty = true;
-                }
+            // Disable button initially
+            button.disabled = true;
+
+            // Enable button when user changes anything in the form
+            form.addEventListener("input", () => {
+                button.disabled = false;
             });
 
         });
+
     </script>
 
 }

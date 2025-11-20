@@ -1,4 +1,4 @@
-﻿using EmployeeManagementSystem.API.Models;
+﻿using EmployeeManagementSystem.API.Helpers;
 namespace EmployeeManagementSystem.API.Repositories
 {
     public interface IRepository<T> where T : class

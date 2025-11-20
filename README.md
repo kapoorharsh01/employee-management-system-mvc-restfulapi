@@ -1,52 +1,114 @@
 # Employee Management System
 
-A full-stack application built with .NET Web API backend and ASP.NET MVC frontend for managing employee records.
+A full-stack application built with **ASP.NET Core Web API** as the
+backend and **ASP.NET MVC** as the frontend for managing employee
+records efficiently.
 
-## Features
+## 🚀 Technologies Used
 
 ### Backend (API)
-- RESTful API using .NET Web API
-- Complete CRUD operations
-- Paginated and sortable employee listing
+
+-   ASP.NET Core Web API\
+-   Entity Framework Core\
+-   AutoMapper\
+-   SQL Server\
+-   Repository Design Pattern
 
 ### Frontend (MVC)
-- ASP.NET MVC application
-- Employee grid with sorting and paging
-- Add/Edit/Delete functionality
 
-## Employee Entity
+-   ASP.NET MVC (.NET Core)\
+-   HttpClient for API communication\
+-   Razor Views
 
-- **EmployeeId**: int (auto-increment)
-- **Name**: string (required)
-- **Department**: string
-- **Email**: string (unique)
-- **DateOfJoining**: DateTime
+## 📌 Features
 
-## API Endpoints
+### Backend (API)
 
-| Method | Endpoint | Description | Query Parameters |
-|--------|----------|-------------|------------------|
-| GET | `/api/employees` | Returns paginated & sortable list | `page`, `pageSize`, `sortColumn`, `sortDirection` |
-| GET | `/api/employees/{id}` | Returns employee by id | - |
-| POST | `/api/employees` | Adds a new employee | - |
-| PUT | `/api/employees/{id}` | Updates an existing employee | - |
-| DELETE | `/api/employees/{id}` | Deletes an employee | - |
+-   RESTful API design\
+-   Complete CRUD operations\
+-   AutoMapper for DTO ↔ Entity mapping\
+-   Paginated & sortable employee listing\
+-   Centralized API response structure\
+-   Repository Pattern for data access abstraction
 
-## MVC Features
+### Frontend (MVC)
+
+-   Employee listing with **paging** & **sorting**\
+-   Add Employee\
+-   Edit Employee\
+-   Delete Employee with confirmation\
+-   API integration through **HttpClient**\
+-   Error handling & validation
+
+## 📄 Employee Entity
+
+  Property        Type       Notes
+  --------------- ---------- -----------------------------
+  EmployeeId      int        Auto-increment, Primary Key
+  Name            string     Required, max length 30
+  Department      string     Max length 75
+  Email           string     Must be unique
+  DateOfJoining   DateTime   Auto-set to current date
+
+## 🔌 API Endpoints
+
+### Base URL: `/api/employeesapi`
+
+  --------------------------------------------------------------------------------
+  Method   Endpoint                   Description                  Query
+                                                                   Parameters
+  -------- -------------------------- ---------------------------- ---------------
+  GET      `/api/employeesapi`        Get paginated + sorted list  page, pageSize,
+                                                                   sortColumn,
+                                                                   sortDirection
+
+  GET      `/api/employeesapi/{id}`   Get employee by ID           ---
+
+  POST     `/api/employeesapi`        Add new employee             ---
+
+  PUT      `/api/employeesapi/{id}`   Update existing employee     ---
+
+  DELETE   `/api/employeesapi/{id}`   Delete employee              ---
+  --------------------------------------------------------------------------------
+
+## 🔄 AutoMapper Configuration
+
+``` csharp
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<EmployeeProfile>();
+});
+```
+
+``` csharp
+public class EmployeeProfile : Profile
+{
+    public EmployeeProfile()
+    {
+        CreateMap<Employee, EmployeeDto>().ReverseMap();
+    }
+}
+```
+
+## 🖥️ MVC Functionality
 
 ### Employee List Page
-- Display employee data in a grid/table
-- Paging (10 records per page)
-- Sorting (click on column header to sort)
+
+-   Displays employee table\
+-   Supports sorting and paging\
+-   Fetches data from API using HttpClient
 
 ### Add Employee
-- Form to add a new employee (calls POST API)
+
+-   Form with validations\
+-   Sends POST request to API
 
 ### Edit Employee
-- Edit existing employee (calls PUT API)
+
+-   Pre-filled form\
+-   Sends PUT request to API
 
 ### Delete Employee
-- Delete employee (calls DELETE API with confirmation)
 
-## Author
-Harsh K.
+-   Confirmation popup\
+-   Sends DELETE request to API

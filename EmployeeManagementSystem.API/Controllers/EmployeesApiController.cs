@@ -4,11 +4,14 @@ using EmployeeManagementSystem.API.Repositories;
 using EmployeeManagementSystem.API.Helpers;
 using EmployeeManagementSystem.API.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
+using System.ComponentModel.DataAnnotations;
 
 namespace EmployeeManagementSystem.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[EnableCors("AllowNg")]
     public class EmployeesApiController : ControllerBase
     {
         private readonly IRepository<Employee> _repository;
@@ -54,6 +57,29 @@ namespace EmployeeManagementSystem.API.Controllers
             }
         }
 
+
+
+        // getAll without query params & it's the part of ng project
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetAllEmployees()
+        {
+            var employees = await _repository.ListAllAsync();
+            return _mapper.Map<List<EmployeeDto>>(employees);
+        }
+
+
+        [HttpPost("check-email")]
+        public async Task<ActionResult> IsEmailExists([FromBody] CheckEmailDto dto)
+        {
+            var exists = await _repository.EmailExistsAsync(dto.EmployeeId, dto.Email);
+            return Ok(new { exists });
+        }
+
+
+
+
+
+
         [HttpGet("{id}")]
         public async Task<ActionResult<EmployeeDto>> GetEmployee(int id)
         {
@@ -61,7 +87,7 @@ namespace EmployeeManagementSystem.API.Controllers
 
             if (result == null)
             {
-                return NotFound(new ApiResponse { Success = false, Message = "Employeee not found" });
+                return NotFound(new { Message = "Employeee not found" });
             }
 
             _logger.LogInformation("Employee fetched successfully: {Id}", id);
@@ -76,21 +102,21 @@ namespace EmployeeManagementSystem.API.Controllers
             try
             {
                 // POST: use excludeId = 0 (new employee, no real ID yet)
-                if (await _repository.EmailExistsAsync(0, dto.Email)) // refer at last for detailed explaination
-                {
-                    _logger.LogWarning("Creation of employee failed because this {Email} already exists", dto.Email);
+                //if (await _repository.EmailExistsAsync(0, dto.Email)) // refer at last for detailed explaination
+                //{
+                //    _logger.LogWarning("Creation of employee failed because this {Email} already exists", dto.Email);
 
-                    return BadRequest(new ApiResponse { Success = false, Message = "Email already exists" });
-                }
+                //    return BadRequest(new ApiResponse { Success = false, Message = "Email already exists" });
+                //}
 
                 var employee = _mapper.Map<Employee>(dto);
 
                 await _repository.AddAsync(employee);
                 _logger.LogInformation("Employee created!");
 
-                return Ok(new ApiResponse
+                return Ok(new
                 {
-                    Success = true,
+                    Status = 200,
                     Message = "Employee created successfully!"
                 });
             }
@@ -112,23 +138,23 @@ namespace EmployeeManagementSystem.API.Controllers
                 {
                     _logger.LogWarning("Employee not found with : {Id}", id);
 
-                    return NotFound(new ApiResponse { Success = false, Message = "Employeee not found" });
+                    return NotFound(new { Message = "Employeee not found" });
                 }
-                if (await _repository.EmailExistsAsync(id, dto.Email))
-                {
-                    _logger.LogWarning("Updation of employee failed because this {Email} already exists", dto.Email);
+                //if (await _repository.EmailExistsAsync(id, dto.Email))
+                //{
+                //    _logger.LogWarning("Updation of employee failed because this {Email} already exists", dto.Email);
 
-                    return BadRequest(new ApiResponse { Success = false, Message = "Email already exists" });
-                }
+                //    return BadRequest(new ApiResponse { Success = false, Message = "Email already exists" });
+                //}
 
                 _mapper.Map(dto, existingEmployee); // refer at last for detailed explaination
 
                 await _repository.UpdateAsync(existingEmployee);
                 _logger.LogInformation("Employee updated!");
 
-                return Ok(new ApiResponse
+                return Ok(new
                 {
-                    Success = true,
+                    Status = 200,
                     Message = "Employee updated successfully!"
                 });
             }
@@ -145,11 +171,7 @@ namespace EmployeeManagementSystem.API.Controllers
             var isDeleted = await _repository.DeleteAsync(id);
             if (!isDeleted)
             {
-                return NotFound(new ApiResponse
-                {
-                    Success = false,
-                    Message = "Employee not found"
-                });
+                return NotFound(new { Message = "Employee not found" });
             }
             return NoContent();
         }

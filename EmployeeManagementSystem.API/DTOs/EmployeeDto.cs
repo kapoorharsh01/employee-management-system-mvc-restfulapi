@@ -4,8 +4,14 @@
     {
         public int EmployeeId { get; set; }
         public string Name { get; set; }
-        public string? Department { get; set; }
-        public string? Email { get; set; }
+        public string Department { get; set; }
+        public string Email { get; set; }
         public DateTime DateOfJoining { get; set; } = DateTime.UtcNow;
+    }
+
+    public class CheckEmailDto
+    {
+        public int EmployeeId { get; set; }
+        public string Email { get; set; }
     }
 }

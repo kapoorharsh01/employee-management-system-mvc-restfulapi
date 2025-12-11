@@ -64,15 +64,14 @@ namespace EmployeeManagementSystem.API
                 options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddScoped<IRepository<Employee>, EmployeesRepository>();
-            //builder.Services.AddCors(options =>
-            //{
-            //    options.AddPolicy("AllowMVC", policy =>
-            //    {
-            //        policy.WithOrigins("https://localhost:7060;http://localhost:5085") // Your MVC URLs
-            //              .AllowAnyHeader()
-            //              .AllowAnyMethod();
-            //    });
-            //});
+
+            builder.Services.AddCors(opt =>
+            {
+                opt.AddPolicy("AllowNg", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200");
+                });
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -83,11 +82,11 @@ namespace EmployeeManagementSystem.API
             }
 
             app.UseHttpsRedirection();
-            
+
             //app.UseRouting();
 
-            //app.UseCors("AllowMVC");
-            
+            app.UseCors("AllowNg");
+
             app.UseAuthorization();
 
             app.MapControllers();

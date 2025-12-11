@@ -9,5 +9,8 @@ namespace EmployeeManagementSystem.API.Repositories
         Task UpdateAsync(T entity);
         Task<bool> DeleteAsync(int id);
         Task<bool> EmailExistsAsync(int excludeId, string email);
+
+        //part of ng project
+        Task<IEnumerable<T>> ListAllAsync();
     }
 }

@@ -105,6 +105,13 @@ namespace EmployeeManagementSystem.API.Repositories
             };
         }
 
+        // Implementation of getAllEmployees without query params & it's the part of ng project
+        public async Task<IEnumerable<Employee>> ListAllAsync()
+        {
+            return await _context.AllEmployees.ToListAsync();
+        }
+
+
         public async Task<Employee?> GetByIdAsync(int id)
         {
             try
